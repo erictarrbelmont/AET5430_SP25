@@ -19,6 +19,15 @@ int myFunction(int inVar, int & out1, int &out2); // & means pass by reference
 
 void gainChange(vector<float> & sig, int N, float dBAmp);
 
+void stereoPanner(vector<float> & input, vector<vector<float>> & output, const float panValue);
+
+struct AudioInfo
+{
+    string filename;
+    int Fs;
+    int bitDepth;
+    int numChannels;
+};
 
 int main() {
     
@@ -43,14 +52,18 @@ int main() {
 //    
 //    float z = 11.f;
     
-    string filename = "AcGtr.wav";
+    AudioInfo info;
+    
+    //string filename = "AcGtr.wav";
     vector<float> signal;
-    int Fs;
-    int bitDepth;
-    int numChannels;
+    //int Fs;
+    //int bitDepth;
+    //int numChannels;
+    info.filename = "AcGtr.wav";
+    
     
     // Read in the audio data to a vector of floats
-    audioread(filename, signal, Fs, bitDepth, numChannels);
+    audioread(info.filename, signal, info.Fs, info.bitDepth, info.numChannels);
     
     int N = signal.size();
     
@@ -59,12 +72,24 @@ int main() {
 //        float y = abs(x);
 //        signal[n] = y;
 //    }
-    float dB = -12.f;
-    gainChange(signal,N,dB);
+    //float dB = -12.f;
+    //gainChange(signal,N,dB);
     
+    //vector<float> monoSignal (N);
     
+    vector<vector<float>> stereoSignal (2,vector<float> (N)); // dynamic allocation (done at run-time)
+    //float stereoArray[2][N]; // static allocation (done at compilation)
+    
+    // Data type warnings
+    float r = 5.6f;
+    int q = static_cast<int> (r);
+    
+    float panValue = 75.f;
+    stereoPanner(signal, stereoSignal, panValue);
+    
+    //numChannels = 2; // change to stereo
     string newFileName = "outputFile.wav";
-    audiowrite(newFileName, signal, Fs, bitDepth, numChannels);
+    //audiowrite(newFileName, stereoSignal, Fs, bitDepth, numChannels);
     
     return 0;
 }
@@ -86,4 +111,24 @@ void gainChange(vector<float> & sig, int N, float dBAmp){
         float x = sig[n];
         sig[n] = x * g;
     }
+}
+
+
+void stereoPanner(vector<float> & input, vector<vector<float>> & output, const float panValue){
+    // panValue [-100, +100]
+//    if (panValue < -100.f){
+//        panValue = -100.f;
+//    }
+//
+    int N = input.size();
+    float p = panValue / 200.f + 0.5f; // [0,1]
+    float aR = std::sqrt(p);
+    float aL = std::sqrt(1.f-p);
+    
+    for (int n = 0; n < N; ++n){
+        float x = input[n];
+        output[0][n] = aL * x;
+        output[1][n] = aR * x;
+    }
+    
 }
