@@ -29,6 +29,57 @@ struct AudioInfo
     int numChannels;
 };
 
+class DistortionEffectProcessor
+{
+public:
+    
+    // Add special "optional" function that is called only at the time the object is created
+    // Called a constructor function
+    DistortionEffectProcessor()
+    {
+        alpha = 5.f;
+    }
+    
+    ~DistortionEffectProcessor(){
+        int n = 5;
+    }
+    
+    void processStereo(vector<vector<float>> & signal, const int N, const int numChannels){
+        for (int c = 0; c < numChannels; ++c){
+            //for (int n = 0; n < N ; ++n){
+            //    signal[c][n] = processSample(signal[c][n]);
+            //}
+            processInPlace(signal[c],N);
+        }
+    }
+    
+    void process(vector<float> & input, vector<float> & output, const int N){
+        for (int n = 0; n < N; ++n){
+            output[n] = processSample(input[n]);
+        }
+    }
+    
+    void processInPlace(vector<float> & signal, const int N){
+        for (int n = 0; n < N; ++n){
+            signal[n] = processSample(signal[n]);
+        }
+    }
+    
+    float processSample(float x){
+        float y = (2.f/M_PI) * atan(alpha * x);
+        return y;
+    }
+    
+    void setDrive(float a){
+        alpha = a;
+    }
+private:
+    
+    float alpha = 1.f; // [1-10]
+    
+};
+
+
 int main() {
     
     // C++ Conditional Statements
@@ -67,29 +118,12 @@ int main() {
     
     int N = signal.size();
     
-//    for (int n = 0; n < N; ++n){
-//        float x = signal[n]; // access individual sample
-//        float y = abs(x);
-//        signal[n] = y;
-//    }
-    //float dB = -12.f;
-    //gainChange(signal,N,dB);
+    DistortionEffectProcessor effect;
+    effect.setDrive(10.f);
+    effect.processInPlace(signal,N);
     
-    //vector<float> monoSignal (N);
-    
-    vector<vector<float>> stereoSignal (2,vector<float> (N)); // dynamic allocation (done at run-time)
-    //float stereoArray[2][N]; // static allocation (done at compilation)
-    
-    // Data type warnings
-    float r = 5.6f;
-    int q = static_cast<int> (r);
-    
-    float panValue = 75.f;
-    stereoPanner(signal, stereoSignal, panValue);
-    
-    //numChannels = 2; // change to stereo
     string newFileName = "outputFile.wav";
-    //audiowrite(newFileName, stereoSignal, Fs, bitDepth, numChannels);
+    audiowrite(newFileName, signal, info.Fs, info.bitDepth, info.numChannels);
     
     return 0;
 }
