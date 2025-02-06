@@ -33,16 +33,32 @@ class DistortionEffectProcessor
 {
 public:
     
+    enum Type
+    {
+        FULLWAVE,
+        HALFWAVE,
+        ARCTAN
+    };
+    
     // Add special "optional" function that is called only at the time the object is created
     // Called a constructor function
-    DistortionEffectProcessor()
-    {
-        alpha = 5.f;
+//    DistortionEffectProcessor()
+//    {
+//        alpha = 5.f;
+//    }
+    
+    //DistortionEffectProcessor(float a){
+    //    alpha = a;
+    //}
+    
+    DistortionEffectProcessor(Type t){
+        distortionType = t;
     }
     
-    ~DistortionEffectProcessor(){
-        int n = 5;
-    }
+    // Destructor
+    //~DistortionEffectProcessor(){
+    //    int n = 5;
+    //}
     
     void processStereo(vector<vector<float>> & signal, const int N, const int numChannels){
         for (int c = 0; c < numChannels; ++c){
@@ -66,7 +82,16 @@ public:
     }
     
     float processSample(float x){
-        float y = (2.f/M_PI) * atan(alpha * x);
+        float y = 0.f;
+        if (distortionType == Type::ARCTAN){
+            y = (2.f/M_PI) * atan(alpha * x);
+        }
+        else if(distortionType == Type::FULLWAVE){
+            y = abs(x);
+        }
+        else {
+            y = max(0.f,x);
+        }
         return y;
     }
     
@@ -77,7 +102,54 @@ private:
     
     float alpha = 1.f; // [1-10]
     
+    Type distortionType;
+    
 };
+
+
+class AudioBuffer
+{
+public:
+    
+    void fillChannelOfBuffer(vector<float> & signal, int channel, int & sigIndex){
+        int N = signal.size();
+        for (int n = 0 ; n < bufferSize ; ++n ){
+            if (sigIndex < N){
+                buffer[channel][n] = signal[sigIndex];
+                sigIndex++;
+            }
+            else {
+                buffer[channel][n] = 0.f;
+            }
+        }
+    }
+    
+    
+    void setSample(float value, int channel, int sampleNumber){
+        buffer[channel][sampleNumber] = value;
+    }
+    
+    float getSample(int channel, int sampleNumber){
+        return buffer[channel][sampleNumber];
+    }
+    
+    void setBufferSize(int size){
+        bufferSize = 512;
+    }
+    
+    int getBufferSize(){
+        return bufferSize;
+    }
+    
+private:
+    static const int NUMCHANNELS = 2;
+    static const int MAXBUFFERSIZE = 1024;
+    float buffer[NUMCHANNELS][MAXBUFFERSIZE] = {0.f};
+    
+    // Whatever the DAW says what the current bufferSize is
+    int bufferSize = 512;
+};
+
 
 
 int main() {
@@ -118,8 +190,10 @@ int main() {
     
     int N = signal.size();
     
-    DistortionEffectProcessor effect;
-    effect.setDrive(10.f);
+    //DistortionEffectProcessor effect;
+    //effect.setDrive(10.f);
+    DistortionEffectProcessor::Type myType = DistortionEffectProcessor::Type::HALFWAVE;
+    DistortionEffectProcessor effect {myType}; // Input variable constructor
     effect.processInPlace(signal,N);
     
     string newFileName = "outputFile.wav";
