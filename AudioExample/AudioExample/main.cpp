@@ -125,6 +125,20 @@ public:
     }
     
     
+    void fillSignalWithBuffer(vector<float> & signal, int channel, int & sigIndex){
+        int N = signal.size();
+        for (int n = 0 ; n < bufferSize ; ++n ){
+            if (sigIndex < N){
+                signal[sigIndex] = buffer[channel][n];
+                sigIndex++;
+            }
+            else {
+                buffer[channel][n] = 0.f;
+            }
+        }
+    }
+    
+    
     void setSample(float value, int channel, int sampleNumber){
         buffer[channel][sampleNumber] = value;
     }
@@ -134,7 +148,7 @@ public:
     }
     
     void setBufferSize(int size){
-        bufferSize = 512;
+        bufferSize = size;
     }
     
     int getBufferSize(){
@@ -148,6 +162,66 @@ private:
     
     // Whatever the DAW says what the current bufferSize is
     int bufferSize = 512;
+};
+
+
+class GainEffectProcessor{
+  
+public:
+    
+    void processBuffer(AudioBuffer & buffer, int channel, int numSamples){
+        for (int n = 0; n < numSamples ; ++n){
+            float x = buffer.getSample(channel,n);
+            buffer.setSample(x * linGain, channel, n);
+        }
+    }
+    
+    void setGaindB(float dBGain){
+        linGain = pow(10.f,dBGain/20.f);
+    }
+private:
+    
+    float linGain = 1.f;
+};
+
+class LPFEffectProcessor {
+public:
+    
+    void processBuffer(AudioBuffer & buffer, int channel, int numSamples){
+        for (int n = 0 ; n < numSamples ; ++n){
+            float x = buffer.getSample(channel,n);
+            float y = 0.5f * (x + x1[channel]);
+            x1[channel] = x;
+            buffer.setSample(y, channel, n);
+        }
+    }
+    
+private:
+    
+    float x1[2] = {0.f}; // initialize delay sample as "0"
+    
+};
+
+
+class TremoloEffectProcessor {
+public:
+    
+    void setRate(float r){
+        rate = r;
+    }
+    
+    void setDepth(float d){
+        depth = d;
+    }
+    
+private:
+    
+    float currentPhase[2] = {0.f}; // in radians
+    float rate = 1.f; // Hz
+    float depth = 1.f; // [0-1]
+    
+    float Fs = 48000.f;
+    float phaseChange = rate * 2.f * M_PI / Fs;
 };
 
 
@@ -190,11 +264,44 @@ int main() {
     
     int N = signal.size();
     
+    AudioBuffer buffer;
+    
+    const int numSamples = 256;
+    buffer.setBufferSize(numSamples);
+    
+    GainEffectProcessor gain;
+    
+    gain.setGaindB(-3.f);
+    
+    LPFEffectProcessor lpf;
+    
+    
+    // Start at the beginning of signal
+    int sigIndex = 0;
+    int outIndex = 0;
+    while (sigIndex < N){
+        
+        // fill up our buffer with a part of the signal (DAW does this)
+        buffer.fillChannelOfBuffer(signal, 0, sigIndex);
+        // sigIndex is advanced inside this function
+        
+        // This is our "plugin" doing its thing
+        gain.processBuffer(buffer, 0, numSamples);
+        lpf.processBuffer(buffer, 0, numSamples);
+        
+        // Fill output signal (DAW does this)
+        buffer.fillSignalWithBuffer(signal, 0, outIndex);
+        
+        //sigIndex++;
+    }
+    
+    
+    
     //DistortionEffectProcessor effect;
     //effect.setDrive(10.f);
-    DistortionEffectProcessor::Type myType = DistortionEffectProcessor::Type::HALFWAVE;
-    DistortionEffectProcessor effect {myType}; // Input variable constructor
-    effect.processInPlace(signal,N);
+    //DistortionEffectProcessor::Type myType = DistortionEffectProcessor::Type::HALFWAVE;
+    //DistortionEffectProcessor effect {myType}; // Input variable constructor
+    //effect.processInPlace(signal,N);
     
     string newFileName = "outputFile.wav";
     audiowrite(newFileName, signal, info.Fs, info.bitDepth, info.numChannels);
