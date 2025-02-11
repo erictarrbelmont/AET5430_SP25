@@ -206,12 +206,35 @@ private:
 class TremoloEffectProcessor {
 public:
     
+    void processBuffer(AudioBuffer & buffer, const int channel, const int numSamples){
+        
+        for (int n = 0 ; n < numSamples ; ++n){
+            float x = buffer.getSample(channel,n); // current sample
+            float lfo = A * sin(currentPhase[channel]) + offset;
+            float y = x * lfo;
+            buffer.setSample(y,channel,n);
+            currentPhase[channel] += phaseChange;
+            if (currentPhase[channel] > PIx2){
+                currentPhase[channel] -= PIx2;
+            }
+                
+        }
+    }
+    
+    void prepare(float sampleRate){
+        Fs = sampleRate;
+    }
+    
+    
     void setRate(float r){
         rate = r;
+        phaseChange = rate * PIx2 / Fs;
     }
     
     void setDepth(float d){
-        depth = d;
+        depth = d; //
+        A = depth * 0.5f;
+        offset = (1.f - A);
     }
     
 private:
@@ -222,6 +245,11 @@ private:
     
     float Fs = 48000.f;
     float phaseChange = rate * 2.f * M_PI / Fs;
+    float A = depth * 0.5f;
+    float offset = (1.f - A);
+    
+    const float PIx2 = 2.f * M_PI;
+    
 };
 
 
@@ -275,6 +303,10 @@ int main() {
     
     LPFEffectProcessor lpf;
     
+    TremoloEffectProcessor tremolo;
+    tremolo.prepare(info.Fs);
+    tremolo.setRate(3.f);
+    tremolo.setDepth(0.5f);
     
     // Start at the beginning of signal
     int sigIndex = 0;
@@ -286,8 +318,9 @@ int main() {
         // sigIndex is advanced inside this function
         
         // This is our "plugin" doing its thing
-        gain.processBuffer(buffer, 0, numSamples);
-        lpf.processBuffer(buffer, 0, numSamples);
+        //gain.processBuffer(buffer, 0, numSamples);
+        //lpf.processBuffer(buffer, 0, numSamples);
+        tremolo.processBuffer(buffer, 0, numSamples);
         
         // Fill output signal (DAW does this)
         buffer.fillSignalWithBuffer(signal, 0, outIndex);
