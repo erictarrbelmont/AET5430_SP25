@@ -7,9 +7,15 @@
             file="Source/PluginProcessor.cpp"/>
       <FILE id="m8i4Bq" name="PluginProcessor.h" compile="0" resource="0"
             file="Source/PluginProcessor.h"/>
+      <FILE id="ipBqPO" name="GainEffectProcessor.h" compile="0" resource="0"
+            file="Source/GainEffectProcessor.h"/>
       <FILE id="F4MOXU" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
       <FILE id="mtmwzH" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <FILE id="pwC4Po" name="TremoloEffectProcessor.cpp" compile="1" resource="0"
+            file="Source/TremoloEffectProcessor.cpp"/>
+      <FILE id="jC8LN1" name="TremoloEffectProcessor.h" compile="0" resource="0"
+            file="Source/TremoloEffectProcessor.h"/>
     </GROUP>
   </MAINGROUP>
   <MODULES>

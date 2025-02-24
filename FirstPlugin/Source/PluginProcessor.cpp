@@ -142,18 +142,26 @@ void FirstPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     
     int N = buffer.getNumSamples();
     
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        for (int n = 0; n < N ; ++n){
-            float x = buffer.getWritePointer(channel)[n];
-            x = x * 0.25f; // -12 dB
-            buffer.getWritePointer(channel)[n] = x;
-            
-        }
-        
-
-        // ..do something to the data...
+    gain.setGaindB(-12.f);
+    
+    //gain.processBuffer(buffer, totalNumInputChannels, N);
+    
+    for (int channel = 0; channel < totalNumInputChannels; ++channel){
+        auto * channelData = buffer.getWritePointer(channel);
+        gain.process(channelData,N);
     }
+    
+    
+//    for (int channel = 0; channel < totalNumInputChannels; ++channel)
+//    {
+//        for (int n = 0; n < N ; ++n){
+//            float x = buffer.getWritePointer(channel)[n];
+//            x = gain.processSample(x);
+//            buffer.getWritePointer(channel)[n] = x;
+//            
+//        }
+//        // ..do something to the data...
+//    }
 }
 
 //==============================================================================

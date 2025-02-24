@@ -9,6 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
+#include "GainEffectProcessor.h"
 
 //==============================================================================
 /**
@@ -54,6 +55,9 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
+    
+    GainEffectProcessor gain;
+    
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FirstPluginAudioProcessor)
 };
