@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "GainEffectProcessor.h"
+#include "TremoloEffectProcessor.h"
 
 //==============================================================================
 /**
@@ -57,6 +58,10 @@ public:
 private:
     
     GainEffectProcessor gain;
+    
+    TremoloEffectProcessor tremolo;
+    
+    AudioPlayHead* playhead;
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FirstPluginAudioProcessor)

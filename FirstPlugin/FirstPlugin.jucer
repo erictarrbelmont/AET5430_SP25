@@ -16,6 +16,12 @@
             file="Source/TremoloEffectProcessor.cpp"/>
       <FILE id="jC8LN1" name="TremoloEffectProcessor.h" compile="0" resource="0"
             file="Source/TremoloEffectProcessor.h"/>
+      <FILE id="TOWomj" name="AudioEffectProcessor.cpp" compile="1" resource="0"
+            file="Source/AudioEffectProcessor.cpp"/>
+      <FILE id="pPo7Zg" name="AudioEffectProcessor.h" compile="0" resource="0"
+            file="Source/AudioEffectProcessor.h"/>
+      <FILE id="S7k33K" name="CubicDistortionEffectProcessor.h" compile="0"
+            resource="0" file="Source/CubicDistortionEffectProcessor.h"/>
     </GROUP>
   </MAINGROUP>
   <MODULES>

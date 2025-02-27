@@ -16,7 +16,7 @@ void TremoloEffectProcessor::processBuffer(juce::AudioBuffer<float> & buffer, co
         float x = buffer.getSample(channel,n); // current sample
         float lfo = A * sin(currentPhase[channel]) + offset;
         float y = x * lfo;
-        buffer.setSample(y,channel,n);
+        buffer.setSample(channel,n,y);
         currentPhase[channel] += phaseChange;
         if (currentPhase[channel] > PIx2){
             currentPhase[channel] -= PIx2;

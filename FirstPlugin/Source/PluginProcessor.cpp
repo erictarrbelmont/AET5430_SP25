@@ -95,6 +95,8 @@ void FirstPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+    tremolo.prepare(sampleRate);
+    
 }
 
 void FirstPluginAudioProcessor::releaseResources()
@@ -139,17 +141,29 @@ void FirstPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
+    playhead = getPlayHead();
+    
+    auto positionInfo = playhead->getPosition();
+    auto bpm = positionInfo->getBpm();
+    
     
     int N = buffer.getNumSamples();
     
     gain.setGaindB(-12.f);
     
-    //gain.processBuffer(buffer, totalNumInputChannels, N);
+    tremolo.setRate(3.f);
+    tremolo.setDepth(1.f);
+    
+    gain.processBuffer(buffer, totalNumInputChannels, N);
     
     for (int channel = 0; channel < totalNumInputChannels; ++channel){
-        auto * channelData = buffer.getWritePointer(channel);
-        gain.process(channelData,N);
+        tremolo.processBuffer(buffer,channel,N);
     }
+    
+//    for (int channel = 0; channel < totalNumInputChannels; ++channel){
+//        auto * channelData = buffer.getWritePointer(channel);
+//        gain.process(channelData,N);
+//    }
     
     
 //    for (int channel = 0; channel < totalNumInputChannels; ++channel)
