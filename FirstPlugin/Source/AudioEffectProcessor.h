@@ -20,6 +20,8 @@ class AudioEffectProcessor
 {
     public:
     
+    virtual ~AudioEffectProcessor() {};
+    
     // These are functions every audio effect will have
     void prepare(double sampleRate);
     
@@ -27,7 +29,12 @@ class AudioEffectProcessor
     
     virtual float processSample(float x, const int channel);
     
-    private:
+    protected:
+    // available in derived classes
     
     double Fs;
+    
+    private:
+    // not available in derived classes
+    
 };

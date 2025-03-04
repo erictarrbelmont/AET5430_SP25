@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "GainEffectProcessor.h"
 #include "TremoloEffectProcessor.h"
+#include "CubicDistortionEffectProcessor.h"
 
 //==============================================================================
 /**
@@ -62,6 +63,9 @@ private:
     TremoloEffectProcessor tremolo;
     
     AudioPlayHead* playhead;
+    
+    
+    CubicDistortionEffectProcessor distortion;
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FirstPluginAudioProcessor)

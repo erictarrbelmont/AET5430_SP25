@@ -97,6 +97,8 @@ void FirstPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     // initialisation that you need..
     tremolo.prepare(sampleRate);
     
+    distortion.prepare(sampleRate);
+    
 }
 
 void FirstPluginAudioProcessor::releaseResources()
@@ -158,6 +160,7 @@ void FirstPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     
     for (int channel = 0; channel < totalNumInputChannels; ++channel){
         tremolo.processBuffer(buffer,channel,N);
+        distortion.processBuffer(buffer, channel, N);
     }
     
 //    for (int channel = 0; channel < totalNumInputChannels; ++channel){
