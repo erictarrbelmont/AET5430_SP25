@@ -16,6 +16,20 @@ FirstPluginAudioProcessorEditor::FirstPluginAudioProcessorEditor (FirstPluginAud
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (400, 300);
+    
+    bypassButton.setBounds(20,30,150,20);
+    bypassButton.setButtonText("Bypass");
+    bypassButton.setToggleState(true, dontSendNotification); // set the initial state "on"
+    addAndMakeVisible(bypassButton); // include this on the plugin window
+    
+    gainKnob.setBounds(200, 30, 150, 150 );
+    gainKnob.setSliderStyle(Slider::SliderStyle::RotaryHorizontalVerticalDrag);
+    gainKnob.setRange(-48.f, 12.f);
+    gainKnob.setValue(0.f);
+    gainKnob.setTextBoxIsEditable(true);
+    gainKnob.setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, false, 100, 20);
+    addAndMakeVisible(gainKnob);
+    
 }
 
 FirstPluginAudioProcessorEditor::~FirstPluginAudioProcessorEditor()

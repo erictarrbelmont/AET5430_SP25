@@ -23,11 +23,14 @@ class AudioEffectProcessor
     virtual ~AudioEffectProcessor() {};
     
     // These are functions every audio effect will have
-    void prepare(double sampleRate);
+    virtual void prepare(double sampleRate); // optional to override
     
     void processBuffer(juce::AudioBuffer<float> & buffer, const int channel, const int numSamples);
     
-    virtual float processSample(float x, const int channel);
+    // Make a "pure" virtual function
+    // No implementation is provided in the base class
+    // Derived class must provide the implementation 
+    virtual float processSample(float x, const int channel) = 0;
     
     protected:
     // available in derived classes

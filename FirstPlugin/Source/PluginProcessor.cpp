@@ -161,6 +161,7 @@ void FirstPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     for (int channel = 0; channel < totalNumInputChannels; ++channel){
         tremolo.processBuffer(buffer,channel,N);
         distortion.processBuffer(buffer, channel, N);
+        //effect.processBuffer(buffer, channel, N);
     }
     
 //    for (int channel = 0; channel < totalNumInputChannels; ++channel){

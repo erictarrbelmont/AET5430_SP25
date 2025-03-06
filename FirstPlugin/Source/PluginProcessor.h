@@ -12,6 +12,7 @@
 #include "GainEffectProcessor.h"
 #include "TremoloEffectProcessor.h"
 #include "CubicDistortionEffectProcessor.h"
+#include "AudioEffectProcessor.h"
 
 //==============================================================================
 /**
@@ -66,6 +67,7 @@ private:
     
     
     CubicDistortionEffectProcessor distortion;
+    //AudioEffectProcessor effect;
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FirstPluginAudioProcessor)

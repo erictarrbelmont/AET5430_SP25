@@ -23,6 +23,7 @@ void AudioEffectProcessor::processBuffer(juce::AudioBuffer<float> & buffer, cons
     }
 }
 
-float AudioEffectProcessor::processSample(float x, const int channel){
-    return x; // This is "wire" effect
-}
+// Remove if Abstract, base class with a pure virtual function
+//float AudioEffectProcessor::processSample(float x, const int channel){
+//    return x; // This is "wire" effect
+//}
