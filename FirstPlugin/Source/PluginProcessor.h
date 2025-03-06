@@ -57,6 +57,15 @@ public:
     void getStateInformation (juce::MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
 
+    static const bool BYPASSED_DEFAULT = false;
+    
+    bool isBypassed = BYPASSED_DEFAULT;
+    
+    static constexpr float GAIN_DEFAULT = 0.f;
+    
+    float gainValue = GAIN_DEFAULT;
+    
+    
 private:
     
     GainEffectProcessor gain;

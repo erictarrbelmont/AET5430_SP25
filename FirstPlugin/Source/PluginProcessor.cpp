@@ -143,15 +143,14 @@ void FirstPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    playhead = getPlayHead();
-    
-    auto positionInfo = playhead->getPosition();
-    auto bpm = positionInfo->getBpm();
+    // Internal plug-in bypass
+    if (isBypassed)
+        return;
     
     
     int N = buffer.getNumSamples();
     
-    gain.setGaindB(-12.f);
+    gain.setGaindB(gainValue);
     
     tremolo.setRate(3.f);
     tremolo.setDepth(1.f);

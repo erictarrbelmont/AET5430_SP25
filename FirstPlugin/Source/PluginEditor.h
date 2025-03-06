@@ -14,7 +14,9 @@
 //==============================================================================
 /**
 */
-class FirstPluginAudioProcessorEditor  : public juce::AudioProcessorEditor
+class FirstPluginAudioProcessorEditor  : public juce::AudioProcessorEditor,
+                                            public juce::Button::Listener,
+                                            public juce::Slider::Listener
 {
 public:
     FirstPluginAudioProcessorEditor (FirstPluginAudioProcessor&);
@@ -23,6 +25,10 @@ public:
     //==============================================================================
     void paint (juce::Graphics&) override;
     void resized() override;
+    
+    void buttonClicked (Button*) override; // provide implementation for pure virtual function
+    
+    void sliderValueChanged (Slider *) override;
 
 private:
     // This reference is provided as a quick way for your editor to

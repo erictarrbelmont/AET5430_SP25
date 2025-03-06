@@ -17,17 +17,18 @@ FirstPluginAudioProcessorEditor::FirstPluginAudioProcessorEditor (FirstPluginAud
     // editor's size to whatever you need it to be.
     setSize (400, 300);
     
-    bypassButton.setBounds(20,30,150,20);
+    bypassButton.addListener(this);
+    bypassButton.setBounds(20,30,150,20); // x , y, width, height
     bypassButton.setButtonText("Bypass");
-    bypassButton.setToggleState(true, dontSendNotification); // set the initial state "on"
+    bypassButton.setToggleState(audioProcessor.BYPASSED_DEFAULT, dontSendNotification); // set the initial state "on"
     addAndMakeVisible(bypassButton); // include this on the plugin window
     
-    gainKnob.setBounds(200, 30, 150, 150 );
+    gainKnob.addListener(this);
+    gainKnob.setBounds(200, 30, 100, 100 );
     gainKnob.setSliderStyle(Slider::SliderStyle::RotaryHorizontalVerticalDrag);
-    gainKnob.setRange(-48.f, 12.f);
-    gainKnob.setValue(0.f);
-    gainKnob.setTextBoxIsEditable(true);
-    gainKnob.setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, false, 100, 20);
+    gainKnob.setRange(-48.f, 12.f, .1f);
+    gainKnob.setValue(audioProcessor.GAIN_DEFAULT);
+    gainKnob.setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
     addAndMakeVisible(gainKnob);
     
 }
@@ -51,4 +52,21 @@ void FirstPluginAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
+}
+
+
+void FirstPluginAudioProcessorEditor::buttonClicked (Button* button){
+    
+    if (button == &bypassButton){
+        audioProcessor.isBypassed = button->getToggleState();
+    }
+}
+
+
+void FirstPluginAudioProcessorEditor::sliderValueChanged (Slider * slider){
+    
+    if (slider == &gainKnob){
+        audioProcessor.gainValue = slider->getValue();
+    }
+    
 }
