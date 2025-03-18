@@ -13,6 +13,7 @@
 #include "TremoloEffectProcessor.h"
 #include "CubicDistortionEffectProcessor.h"
 #include "AudioEffectProcessor.h"
+#include "Biquad.h"
 
 //==============================================================================
 /**
@@ -65,6 +66,20 @@ public:
     
     float gainValue = GAIN_DEFAULT;
     
+    static constexpr float FREQ_DEFAULT = 1000.f;
+    
+    float freqValue = FREQ_DEFAULT;
+    
+    static constexpr float FILTER_AMP_DEFAULT = 0.f;
+    
+    float filterAmpValue = FILTER_AMP_DEFAULT;
+    
+    static constexpr float FILTER_Q_DEFAULT = 0.7071f;
+    
+    float filterQValue = FILTER_Q_DEFAULT;
+    
+    
+    Biquad::FilterType filterType = Biquad::FilterType::LPF;
     
 private:
     
@@ -77,6 +92,8 @@ private:
     
     CubicDistortionEffectProcessor distortion;
     //AudioEffectProcessor effect;
+    
+    Biquad filter {Biquad::FilterType::LPF,0.7071f};
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FirstPluginAudioProcessor)

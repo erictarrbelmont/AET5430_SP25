@@ -16,7 +16,8 @@
 */
 class FirstPluginAudioProcessorEditor  : public juce::AudioProcessorEditor,
                                             public juce::Button::Listener,
-                                            public juce::Slider::Listener
+                                            public juce::Slider::Listener,
+                                            public juce::ComboBox::Listener
 {
 public:
     FirstPluginAudioProcessorEditor (FirstPluginAudioProcessor&);
@@ -29,6 +30,8 @@ public:
     void buttonClicked (Button*) override; // provide implementation for pure virtual function
     
     void sliderValueChanged (Slider *) override;
+    
+    void comboBoxChanged(ComboBox * comboBox) override;
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -39,6 +42,14 @@ private:
     ToggleButton bypassButton;
     
     Slider gainKnob;
+    
+    Slider freqKnob;
+    
+    Slider filterAmpKnob;
+    
+    Slider filterQKnob;
 
+    ComboBox filterSelector;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FirstPluginAudioProcessorEditor)
 };

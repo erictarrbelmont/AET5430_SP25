@@ -22,6 +22,8 @@
             file="Source/AudioEffectProcessor.h"/>
       <FILE id="S7k33K" name="CubicDistortionEffectProcessor.h" compile="0"
             resource="0" file="Source/CubicDistortionEffectProcessor.h"/>
+      <FILE id="Pd3pka" name="Biquad.cpp" compile="1" resource="0" file="Source/Biquad.cpp"/>
+      <FILE id="PqpNXH" name="Biquad.h" compile="0" resource="0" file="Source/Biquad.h"/>
     </GROUP>
   </MAINGROUP>
   <MODULES>

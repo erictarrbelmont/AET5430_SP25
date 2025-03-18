@@ -99,6 +99,7 @@ void FirstPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
     
     distortion.prepare(sampleRate);
     
+    filter.setFs(sampleRate);
 }
 
 void FirstPluginAudioProcessor::releaseResources()
@@ -151,6 +152,10 @@ void FirstPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     int N = buffer.getNumSamples();
     
     gain.setGaindB(gainValue);
+    filter.setFreq(freqValue);
+    filter.setAmpdB(filterAmpValue);
+    filter.setQ(filterQValue);
+    filter.setFilterType(filterType);
     
     tremolo.setRate(3.f);
     tremolo.setDepth(1.f);
@@ -158,15 +163,15 @@ void FirstPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, 
     gain.processBuffer(buffer, totalNumInputChannels, N);
     
     for (int channel = 0; channel < totalNumInputChannels; ++channel){
-        tremolo.processBuffer(buffer,channel,N);
+        //tremolo.processBuffer(buffer,channel,N);
         distortion.processBuffer(buffer, channel, N);
         //effect.processBuffer(buffer, channel, N);
     }
     
-//    for (int channel = 0; channel < totalNumInputChannels; ++channel){
-//        auto * channelData = buffer.getWritePointer(channel);
-//        gain.process(channelData,N);
-//    }
+    for (int channel = 0; channel < totalNumInputChannels; ++channel){
+        auto * channelData = buffer.getWritePointer(channel);
+        filter.processBuffer(channelData, buffer.getNumSamples(), channel);
+    }
     
     
 //    for (int channel = 0; channel < totalNumInputChannels; ++channel)
