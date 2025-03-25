@@ -51,5 +51,8 @@ private:
 
     ComboBox filterSelector;
     
+    float refWidth = 450.f;
+    float refHeight = 300.f;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FirstPluginAudioProcessorEditor)
 };

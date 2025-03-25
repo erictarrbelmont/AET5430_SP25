@@ -15,24 +15,44 @@ FirstPluginAudioProcessorEditor::FirstPluginAudioProcessorEditor (FirstPluginAud
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (450, 300);
+    
+    float scalar = 1.4f;
+    int windowWidth = (int) (scalar * refWidth);
+    int windowHeight = (int) (scalar * refHeight);
+    setSize (windowWidth, windowHeight);
+    
+    int xPos = (int) ((20.f / refWidth) * windowWidth);
+    int yPos = (int) ((30.f / refHeight) * windowHeight);
+    int width = (int) ((150.f / refWidth) * windowWidth);
+    int height = (int) ((20.f / refHeight) * windowHeight);
     
     bypassButton.addListener(this);
-    bypassButton.setBounds(20,30,150,20); // x , y, width, height
+    bypassButton.setBounds(xPos,yPos,width,height); // x , y, width, height
     bypassButton.setButtonText("Bypass");
     bypassButton.setToggleState(audioProcessor.BYPASSED_DEFAULT, dontSendNotification); // set the initial state "on"
     addAndMakeVisible(bypassButton); // include this on the plugin window
     
+    
+    xPos = (int) ((200.f / refWidth) * windowWidth);
+    yPos = (int) ((30.f / refHeight) * windowHeight);
+    width = (int) ((100.f / refWidth) * windowWidth);
+    height = width; //(int) ((20.f / refHeight) * windowHeight);
+    
     gainKnob.addListener(this);
-    gainKnob.setBounds(200, 30, 100, 100 );
+    gainKnob.setBounds(xPos, yPos, width, height );
     gainKnob.setSliderStyle(Slider::SliderStyle::RotaryHorizontalVerticalDrag);
     gainKnob.setRange(-48.f, 12.f, .1f);
     gainKnob.setValue(audioProcessor.GAIN_DEFAULT);
     gainKnob.setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
     addAndMakeVisible(gainKnob);
     
+    xPos = (int) ((20.f / refWidth) * windowWidth);
+    yPos = (int) ((160.f / refHeight) * windowHeight);
+    width = (int) ((100.f / refWidth) * windowWidth);
+    height = width; //(int) ((20.f / refHeight) * windowHeight);
+    
     freqKnob.addListener(this);
-    freqKnob.setBounds(20, 160, 100, 100 );
+    freqKnob.setBounds(xPos, yPos, width, height );
     freqKnob.setSliderStyle(Slider::SliderStyle::RotaryHorizontalVerticalDrag);
     freqKnob.setRange(20.f, 20000.f, 1.f);
     freqKnob.setValue(audioProcessor.FREQ_DEFAULT);
@@ -40,16 +60,26 @@ FirstPluginAudioProcessorEditor::FirstPluginAudioProcessorEditor (FirstPluginAud
     freqKnob.setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
     addAndMakeVisible(freqKnob);
     
+    xPos = (int) ((125.f / refWidth) * windowWidth);
+    yPos = (int) ((160.f / refHeight) * windowHeight);
+    width = (int) ((100.f / refWidth) * windowWidth);
+    height = width; //(int) ((20.f / refHeight) * windowHeight);
+    
     filterAmpKnob.addListener(this);
-    filterAmpKnob.setBounds(125, 160, 100, 100 );
+    filterAmpKnob.setBounds(xPos, yPos, width, height );
     filterAmpKnob.setSliderStyle(Slider::SliderStyle::RotaryHorizontalVerticalDrag);
     filterAmpKnob.setRange(-12.f, 12.f, 0.1f);
     filterAmpKnob.setValue(audioProcessor.FILTER_AMP_DEFAULT);
     filterAmpKnob.setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
     addAndMakeVisible(filterAmpKnob);
     
+    xPos = (int) ((230.f / refWidth) * windowWidth);
+    yPos = (int) ((160.f / refHeight) * windowHeight);
+    width = (int) ((100.f / refWidth) * windowWidth);
+    height = width; //(int) ((20.f / refHeight) * windowHeight);
+    
     filterQKnob.addListener(this);
-    filterQKnob.setBounds(230, 160, 100, 100 );
+    filterQKnob.setBounds(xPos, yPos, width, height );
     filterQKnob.setSliderStyle(Slider::SliderStyle::RotaryHorizontalVerticalDrag);
     filterQKnob.setRange(0.1f, 10.f, 0.01f);
     filterQKnob.setSkewFactorFromMidPoint(2.0);
@@ -57,8 +87,13 @@ FirstPluginAudioProcessorEditor::FirstPluginAudioProcessorEditor (FirstPluginAud
     filterQKnob.setTextBoxStyle(Slider::TextEntryBoxPosition::TextBoxBelow, false, 50, 20);
     addAndMakeVisible(filterQKnob);
     
+    xPos = (int) ((335.f / refWidth) * windowWidth);
+    yPos = (int) ((160.f / refHeight) * windowHeight);
+    width = (int) ((100.f / refWidth) * windowWidth);
+    height = (int) ((40.f / refHeight) * windowHeight);
+    
     filterSelector.addListener(this);
-    filterSelector.setBounds(335,160,100,40);
+    filterSelector.setBounds(xPos,yPos,width,height);
     filterSelector.addItem("LPF",1);
     filterSelector.addItem("HPF",2);
     filterSelector.addItem("Low Shelf",3);
@@ -81,12 +116,26 @@ void FirstPluginAudioProcessorEditor::paint (juce::Graphics& g)
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (juce::Colours::green);
 
+    
+    auto bounds = getLocalBounds();
+    
+    float windowWidth = (float) bounds.getWidth();
+    float windowHeight = (float) bounds.getHeight();
+    
     g.setColour (juce::Colours::white);
-    g.setFont (juce::FontOptions (15.0f));
+    g.setFont (juce::FontOptions (15.0f * windowHeight/refHeight));
+    
+    int xPos = (int) ((20.f / refWidth) * windowWidth);
+    int yPos = (int) ((140.f / refHeight) * windowHeight);
+    int width = (int) ((100.f / refWidth) * windowWidth);
+    int height = (int) ((20.f / refHeight) * windowHeight);
+    
     //g.drawFittedText ("My First Plugin", getLocalBounds(), juce::Justification::centred, 1);
-    g.drawFittedText ("Freq", 20,140,100,20, juce::Justification::centred, 1);
-    g.drawFittedText ("Amp", 125,140,100,20, juce::Justification::centred, 1);
-    g.drawFittedText ("Q", 230,140,100,20, juce::Justification::centred, 1);
+    g.drawFittedText ("Freq", xPos,yPos,width,height, juce::Justification::centred, 1);
+    xPos = (int) ((125.f / refWidth) * windowWidth);
+    g.drawFittedText ("Amp", xPos,yPos,width,height, juce::Justification::centred, 1);
+    xPos = (int) ((230.f / refWidth) * windowWidth);
+    g.drawFittedText ("Q", xPos,yPos,width,height, juce::Justification::centred, 1);
 }
 
 void FirstPluginAudioProcessorEditor::resized()
